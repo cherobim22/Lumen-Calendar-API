@@ -3,23 +3,23 @@
 namespace App\Http\Controllers;
 
 use App\Models\GoogleClient;
-use Helper\GoogleClientHelper;
+use App\Helpers\GoogleClientHelper;
 use Google_Client;
 use Google_Service_Calendar;
 
 class ClienteController extends Controller {
 
     public function Auth(){
-        $gd_client = new GoogleClient;
+        $gd_client = new GoogleClientHelper;
         $url_acesso = $gd_client->getAuthUrl();
         return $url_acesso;
     }
 
     public function Callback(){
-        $gd_client = new GoogleCLient;
+        $gd_client = new GoogleCLientHelper;
         $gd_client->setCode($_GET['code']);
         $token = $gd_client->getToken();
-        print_r($token);
+        print_r(json_encode($token));
     }
 
     public function buscarClientes(){
