@@ -19,7 +19,15 @@ class ClienteController extends Controller {
         $gd_client = new GoogleCLientHelper;
         $gd_client->setCode($_GET['code']);
         $token = $gd_client->getToken();
-        print_r(json_encode($token));
+
+        $access_token = $token['access_token'];
+        $expires_in = $token['expires_in'];
+        $refresh_token = $token['refresh_token'];
+        $created = $token['created'];
+
+        print_r($token);
+        
+
     }
 
     public function buscarClientes(){
@@ -27,12 +35,4 @@ class ClienteController extends Controller {
         return $googleClient->all();
     }
 
-    private $calendar = null;
-    private $service = null;
-    private $is_authenticated = false;
-    private $code;
-    private $token;
-    private $calendar_id = "primary";
-    //private $redirect_uri = "https://cherobim.innovaweb.com.br/allan/callback.php";
-    private $redirect_uri = "http://localhost:8000/callback";
 }

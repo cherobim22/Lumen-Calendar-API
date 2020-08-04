@@ -71,5 +71,5 @@ class GoogleClientHelper {
     private $token;
     private $calendar_id = "primary";
     //private $redirect_uri = "https://cherobim.innovaweb.com.br/allan/callback.php";
-    private $redirect_uri = "http://localhost:8000/callback";
+    private $redirect_uri = "https://cherobim.innovaweb.com.br/callback";
 }
