@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
  * Classe para lidar com as automacoes
  */
 class GoogleClientHelper {
-
+    //Contruct
     public function __construct(){
         $this->client = new Google_Client();
         $this->client->setAuthConfig(storage_path('keys/credentials.json'));
@@ -33,12 +33,14 @@ class GoogleClientHelper {
 
         return $this->client->createAuthUrl();
     }
+
     /**
      * Funcao para setar o code
      */
     public function setCode($code){
         $this->code = $code;
     }
+
     /**
      * Seta os atributos do token, expires, token, refresh_token,scope
      */
@@ -53,6 +55,7 @@ class GoogleClientHelper {
         }
         $this->is_authenticated = true;
     }
+
     /**
      * Funcao para buscar o token com o code
      * @return Array Array com token, expires, escopo, refresh token
@@ -63,6 +66,7 @@ class GoogleClientHelper {
         $this->client->authenticate($this->code);
         return $this->client->getAccessToken();
     }
+
     /**
      * Funcao para buscar os eventos
      * @param string $calendar_id Se passar como null vai ser da agenda primaria
@@ -83,6 +87,7 @@ class GoogleClientHelper {
         $results = $this->service->events->listEvents($this->calendar_id, $optParams);
         return $results->getItems();
     }
+
     /**
      * Funcao para criar um evento
      * @param Request event_id, summary, description, start-datetime, end_datetime, calendar_id
@@ -113,6 +118,7 @@ class GoogleClientHelper {
         $creat_event = $this->calendar->events->insert($request->get('calendar_id'), $optParams);
         return $creat_event;
     }
+
     /**
      * Funcao para atualizar um evento
      * @param Request event_id, summary, description, start-datetime, end_datetime, calendar_id
@@ -151,6 +157,7 @@ class GoogleClientHelper {
         $updateEvent = $this->service->events->update($request->get('calendar_id'), $this->id_event, $event);
         return $updateEvent;
     }
+
       /**
      * Funcao para deletar um evento
      * @param Request event_id, calendar_id
@@ -215,6 +222,7 @@ class GoogleClientHelper {
            echo 'Calendario não encontrado: ',  $e->getMessage(), "\n";
        }
     }
+
      /**
      * Funcao para atualizar um CALENDARIO
      * @param Request calendar_id, summary

@@ -17,6 +17,7 @@ class GoogleClientController extends Controller {
         $clientHelper = new GoogleClientHelper;
         $this->clientHelper = $clientHelper;
     }
+
     /**
      * Funcao que gera a url de acesso ao token
      *
@@ -56,6 +57,7 @@ class GoogleClientController extends Controller {
         $events = $this->clientHelper->getEvents();
         return $events;
     }
+
     /**
      * Funcao para criar um evento
      * @param int $id do usario contido no banco
@@ -72,6 +74,7 @@ class GoogleClientController extends Controller {
          $event = $gd_client->createEvent($request);
          return json_encode($event);
     }
+
     /**
      * Funcao para atualizar um evento
      * @param int $id do usario contido no banco
@@ -88,6 +91,7 @@ class GoogleClientController extends Controller {
           $event = $gd_client->updateEvents($request);
           return json_encode($event);
     }
+
      /**
      * Funcao para deletar eventos de um usuario
      * @param int $id do usario contido no banco
