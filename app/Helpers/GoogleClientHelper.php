@@ -3,6 +3,8 @@
 namespace App\Helpers;
 use Google_Client;
 use Google_Service_Calendar;
+use Google_Service_Calendar_Calendar;
+use Illuminate\Http\Request;
 
 /**
  * Classe para lidar com as automacoes
@@ -45,8 +47,8 @@ class GoogleClientHelper {
         $this->token = $arr_token;
         $this->client->setAccessToken($this->token);
         if($this->client->isAccessTokenExpired($this->token)){
-            $client->refreshToken($this->token['refresh_token']);
-            $this->token = $client->getAccessToken();
+            $this->client->refreshToken($this->token['refresh_token']);
+            $this->token = $this->client->getAccessToken();
             $this->client->setAccessToken($this->token['access_token']);
             //atualizaria no banco
         }
@@ -62,6 +64,65 @@ class GoogleClientHelper {
         $this->client->setIncludeGrantedScopes(true);
         $this->client->authenticate($this->code);
         return $this->client->getAccessToken();
+    }
+
+    /**
+     * Funcao para buscar os eventos
+     *
+     * @param string $calendar_id Se passar como null vai ser da agenda primaria
+     * @return array Um array de eventos
+     */
+    public function getEvents(){
+        if(!$this->is_authenticated){
+            throw new Exception("Você precisa autenticar primeiro", 1);
+        }
+        if(!$this->calendar){
+            $this->setCalendar($this->calendar_id);
+        }
+        $optParams = array(
+            'orderBy' => 'startTime' ,
+            'singleEvents' => true,
+            'timeMin' => date('c'),//0000-01-01T20:38:58+02:00
+        );
+        $results = $this->calendar->events->listEvents($this->calendar_id, $optParams);
+        return $results->getItems();
+    }
+
+ /**
+     * Funcao para criar um novo CALENDARIO
+     * Sumario
+     * @return Msg com o nome do CALENDARIO
+     */
+    public function createCalendar(Request $request){
+        if(!$this->service){
+            $this->setCalendarService($this->client);
+        }
+        $calendarEntry =  new Google_Service_Calendar_Calendar();
+        $calendarEntry->setSummary($request->get('summary'));
+        $createdCalendar = $this->service->calendars->insert($calendarEntry);
+        return $createdCalendar->getSummary();
+     }
+
+ /**
+     *
+     * Funcao para criar uma instancia do calendar
+     */
+    private function setCalendar($calendar_id){
+        $this->calendar = new Google_Service_Calendar($this->client);
+    }
+
+    /**
+     * Funcao para setar o id do calendar
+     */
+    public function setCalendarId($calendar_id){
+        $this->calendar_id = $calendar_id;
+    }
+
+    /**
+     * Funcao para criar um novo serviço do calendar
+     */
+    public function setCalendarService($client){
+        $this->service = new Google_Service_Calendar($this->client);
     }
 
     private $calendar = null;
