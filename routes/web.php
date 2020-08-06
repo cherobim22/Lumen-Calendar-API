@@ -13,3 +13,6 @@
 
 $router->get('/auth', 'ClienteController@Auth');
 $router->get('/callback', 'ClienteController@Callback');
+$router->get('/list/{id}', 'ClienteController@getEvents');
+$router->post('/create/{id}', 'ClienteController@newCalendar');
+

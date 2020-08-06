@@ -26,7 +26,6 @@ class GoogleClient extends Model{
         'created'
     ];
 
-    //atributo casts convertendo date para timestamp
 }
 
 ?>
