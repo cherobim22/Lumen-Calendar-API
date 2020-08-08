@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
  * Classe para lidar com as automacoes
  */
 class GoogleClientHelper {
-    //Contruct
+
     public function __construct(){
         $this->client = new Google_Client();
         $this->client->setAuthConfig(storage_path('keys/credentials.json'));
@@ -33,14 +33,12 @@ class GoogleClientHelper {
 
         return $this->client->createAuthUrl();
     }
-
     /**
      * Funcao para setar o code
      */
     public function setCode($code){
         $this->code = $code;
     }
-
     /**
      * Seta os atributos do token, expires, token, refresh_token,scope
      */
@@ -55,7 +53,6 @@ class GoogleClientHelper {
         }
         $this->is_authenticated = true;
     }
-
     /**
      * Funcao para buscar o token com o code
      * @return Array Array com token, expires, escopo, refresh token
@@ -90,23 +87,23 @@ class GoogleClientHelper {
 
     /**
      * Funcao para criar um evento
-     * @param Request event_id, summary, description, start-datetime, end_datetime, calendar_id
+     * @param Request calendarID, event_id, summary, description, start-datetime, end_datetime, participante_1, participante_1
      * @return Obj objeto do evento criado
      */
     public function createEvent(Request $request){
         if(!$this->is_authenticated){
             throw new Exception("Você precisa autenticar primeiro", 1);
         }
-        if(!$this->calendar){
-            $this->setCalendar($request->get('calendar_id'));
+        if(!$this->service){
+            $this->setCalendarService($this->client);
         }
         $event = [
             'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
-           // 'attendees' => array(
-             //   array('email' => $request(['participante_1']),
-               // array('email' => $request(['participante_2']),
-            //),
+            'attendees' => array(
+                array('email' => $request(['participante_1'])),
+                array('email' => $request(['participante_2'])),
+            )
         ];
         if($request->get('description') !== NULL){
             $event['description'] = $request->get('description');
@@ -115,71 +112,69 @@ class GoogleClientHelper {
             $event['summary'] = $request->get('summary');
         }
         $optParams = new Google_Service_Calendar_Event($event);
-        $creat_event = $this->calendar->events->insert($request->get('calendar_id'), $optParams);
+        $creat_event = $this->service->events->insert($this->calendar_id, $optParams);
         return $creat_event;
     }
 
     /**
      * Funcao para atualizar um evento
-     * @param Request event_id, summary, description, start-datetime, end_datetime, calendar_id
+     * @param Request QUERY_PARAMS -> calendarID, event_id, summary, description, start_datetime, end_datetime
      * @return Obj objeto do evento atualizado
      */
     public function updateEvents(Request $request){
-        $this->id_event = $request->get('event_id');
+        $id_event = $request->input('event_id');
 
         if(!$this->service){
             $this->setCalendarService($this->client);
         }
-
-        $event = $this->service->events->get($this->calendar_id,$this->id_event);
-
-        if($request->get('summary') !== NULL){
-          $event->setSummary($request->get('summary'));
+        $event = $this->service->events->get($this->calendar_id, $id_event);
+        if($request->has('summary')){
+          $event->setSummary($request->input('summary'));
         }
         if($request->get('description') !== NULL){
              $event->setDescription($request->get('description'));
         }
         //inicio e fim
         $serviceDateTime = new Google_Service_Calendar_EventDateTime();
-        if($request->get('start_datetime') !== NULL){
+        if($request->has('start_datetime')){
             $start = $serviceDateTime;
             $start->setDateTime($request->get('start_datetime'));
             $start->setTimeZone('America/Sao_Paulo');
             $event->setStart($start);
         }
-        if($request->get('end_datetime') !== NULL){
+        if($request->has('end_datetime')){
             $end = $serviceDateTime;
-            $end->setDateTime($request->get('end_datetime'));
+            $end->setDateTime($request->input('end_datetime'));
             $end->setTimeZone('America/Sao_Paulo');
             $event->setEnd($end);
         }
         //participantes...
-        $updateEvent = $this->service->events->update($request->get('calendar_id'), $this->id_event, $event);
+        $updateEvent = $this->service->events->update($this->calendar_id, $id_event, $event );
         return $updateEvent;
     }
 
       /**
      * Funcao para deletar um evento
-     * @param Request event_id, calendar_id
+     * @param Request  calendar_id, event_id
      * @return Msg deletado
      */
     public function deleteEvents(Request $request){
-        $this->id_event = $request->get('event_id');
-        if(!$this->calendar){
-            $this->setCalendar($this->calendar_id);
+        $id_event = $request->input('event_id');
+        if(!$this->service){
+            $this->setCalendarService($this->client);
         }
         try{
-             $deletEvent = $this->calendar->events->delete($request->get('calendar_id'), $this->id_event);
+             $deletEvent = $this->service->events->delete($this->calendar_id, $id_event);
              return "deletado";
         }catch (Exception $e) {
             echo 'Evento não encontrado: ',  $e->getMessage(), "\n";
         }
     }
 
-     /**
-     * Funcao para listar CALENDARIOS
-     * @return Obj de todos os calendarios
-     */
+    /**
+    * Funcao para listar CALENDARIOS
+    * @return Obj de todos os calendarios
+    */
     public function listCalendars(){
         if(!$this->service){
             $this->setCalendarService($this->client);
@@ -195,14 +190,13 @@ class GoogleClientHelper {
      * @return Msg com o nome do CALENDARIO
      */
     public function createCalendar(Request $request){
-
         if(!$this->service){
             $this->setCalendarService($this->client);
         }
         $calendarEntry =  new Google_Service_Calendar_Calendar();
         $calendarEntry->setSummary($request->get('summary'));
         $createdCalendar = $this->service->calendars->insert($calendarEntry);
-        return $createdCalendar->getSummary();
+        return $createdCalendar;
      }
 
       /**
@@ -215,7 +209,7 @@ class GoogleClientHelper {
             $this->setCalendarService($this->client);
         }
         try{
-            $id = $request->get('calendar_id');
+            $id = $request->get('calendarId');
             $deleteCalendar = $this->service->calendars->delete($id);
             return "deletado";
        }catch (Exception $e) {
@@ -228,16 +222,16 @@ class GoogleClientHelper {
      * @param Request calendar_id, summary
      * @return Msg deletado
      */
-       public function updateCalendar(Request $request){
+    public function updateCalendar(Request $request){
         if(!$this->service){
             $this->setCalendarService($this->client);
         }
-        $id = $request->get('calendar_id');
-        $calendar =  $this->service->calendars->get($id);
+        $id = $request->get('calendarId');
+        $calendar = $this->service->calendars->get($id);
         $calendar->setSummary($request->get('summary'));
         $updatedCalendar = $this->service->calendars->update($id, $calendar);
         return $updatedCalendar;
-       }
+    }
 
      /**
      *
