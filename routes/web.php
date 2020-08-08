@@ -11,17 +11,17 @@
 |
 */
 //autenticação
-$router->get('/auth', 'GoogleClientController@Auth');
-$router->get('/callback', 'GoogleClientController@Callback');
+$router->get('/auth', 'LoginController@Auth');
+$router->get('/callback', 'LoginController@Callback');
 
 //calendario
-$router->post('/createCalendar/{id}', 'GoogleClientController@newCalendar');
-$router->get('/calendars/{id}', 'GoogleClientController@getCalendars');
-$router->post('/deletCalendar/{id}', 'GoogleClientController@deletCalendar');
-$router->post('/updateCalendar/{id}', 'GoogleClientController@updateCalendar');
+$router->get('/calendars/{id}', 'GoogleClientController@listCalendars');
+$router->post('/createCalendar/{id}', 'GoogleClientController@createCalendar');
+$router->put('/updateCalendar/{id}', 'GoogleClientController@updateCalendar');
+$router->delete('/deletCalendar/{id}', 'GoogleClientController@deleteCalendar');
 
 //eventos
-$router->get('/events/{id}', 'GoogleClientController@getEvents');
+$router->get('/events/{id}', 'GoogleClientController@listEvents');
 $router->post('/createEvents/{id}', 'GoogleClientController@createEvents');
-$router->post('/updateEvents/{id}', 'GoogleClientController@updateEvents');
-$router->post('/deletEvents/{id}', 'GoogleClientController@deleteEvents');
+$router->put('/updateEvents/{id}', 'GoogleClientController@updateEvents');
+$router->delete('/deletEvents/{id}', 'GoogleClientController@deleteEvents');
