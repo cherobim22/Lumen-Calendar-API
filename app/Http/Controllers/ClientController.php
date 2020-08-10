@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-   private $client;
-
+    //__contruct
     public function __construct(GoogleClient $googleClient)
     {
         $this->client = $googleClient;
@@ -17,7 +16,6 @@ class ClientController extends Controller
 
      /**
      * Funcao para buscar todos os clientes do banco
-     *
      * @return Array de objetos
      */
     public function buscarTodos(){
@@ -26,7 +24,6 @@ class ClientController extends Controller
 
      /**
      * Funcao para buscar um cliente especifico
-     *
      * @return Obj
      */
     public function buscarClientes(int $id){
@@ -35,7 +32,6 @@ class ClientController extends Controller
 
      /**
      * Funcao para deletar um cliente
-     *
      * @param id do cliente
      */
     public function deletarClientes(int $id){
@@ -44,11 +40,12 @@ class ClientController extends Controller
     }
 
      /**
-     * Funcao para Atualizar um cliente
-     *
+     * Funcao para Atualizar um client
      * @param id do cliente
      */
     public function updateClient(int $id, Request $request){
        return $this->client->where('id', $id)->update($request->all());
     }
+
+    private $client;
 }
