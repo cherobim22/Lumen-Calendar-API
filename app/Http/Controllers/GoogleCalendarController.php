@@ -41,7 +41,7 @@ class GoogleClientController extends Controller {
     /**
      * Funcao para criar um evento
      * @param int $id do usario contido no banco
-     * @param Request Sumario, Descrição, Hora Inicio, Hora Fim, Participantes
+     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
      * @return Obj objeto do evento criado
      */
     public function createEvents(int $id, Request $request){
@@ -57,7 +57,7 @@ class GoogleClientController extends Controller {
     /**
      * Funcao para atualizar um evento
      * @param int $id do usario contido no banco
-     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime
+     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
      * @return Obj objeto do evento atualizado
      */
     public function updateEvents(int $id, Request $request){

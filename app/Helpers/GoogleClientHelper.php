@@ -87,7 +87,7 @@ class GoogleClientHelper {
 
     /**
      * Funcao para criar um evento
-     * @param Request calendarID, event_id, summary, description, start-datetime, end_datetime, participante_1, participante_1
+     * @param Request calendarID, event_id, summary, description, start-datetime, end_datetime, attendee_1, attendee_2
      * @return Obj objeto do evento criado
      */
     public function createEvent(Request $request){
@@ -101,8 +101,8 @@ class GoogleClientHelper {
             'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'attendees' => array(
-                array('email' => $request(['participante_1'])),
-                array('email' => $request(['participante_2'])),
+                array('email' => $request(['attendee_1'])),
+                array('email' => $request(['attendee_2'])),
             )
         ];
         if($request->get('description') !== NULL){
@@ -118,7 +118,7 @@ class GoogleClientHelper {
 
     /**
      * Funcao para atualizar um evento
-     * @param Request QUERY_PARAMS -> calendarID, event_id, summary, description, start_datetime, end_datetime
+     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime
      * @return Obj objeto do evento atualizado
      */
     public function updateEvents(Request $request){
@@ -148,7 +148,7 @@ class GoogleClientHelper {
             $end->setTimeZone('America/Sao_Paulo');
             $event->setEnd($end);
         }
-        //participantes...
+
         $updateEvent = $this->service->events->update($this->calendar_id, $id_event, $event );
         return $updateEvent;
     }
@@ -173,7 +173,7 @@ class GoogleClientHelper {
 
     /**
     * Funcao para listar CALENDARIOS
-    * @return Obj de todos os calendarios
+    * @return array de calendarios
     */
     public function listCalendars(){
         if(!$this->service){
@@ -187,7 +187,7 @@ class GoogleClientHelper {
     /**
      * Funcao para criar um novo CALENDARIO
      * @param Request summary
-     * @return Msg com o nome do CALENDARIO
+     * @return Msg nome do CALENDARIO
      */
     public function createCalendar(Request $request){
         if(!$this->service){
