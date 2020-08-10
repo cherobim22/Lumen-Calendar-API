@@ -15,7 +15,7 @@ class GoogleClientController extends Controller {
 
     /**
      * Funcao que define o usuario de acesso
-     *
+     * @param int $id do usario contido no banco
      */
     public function setAccess(int $id){
         $this->client = new GoogleClient;
@@ -57,13 +57,11 @@ class GoogleClientController extends Controller {
     /**
      * Funcao para atualizar um evento
      * @param int $id do usario contido no banco
-     * @param Request QUERY_PARAMS -> calendarID, event_id, summary, description, start_datetime, end_datetime
+     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime
      * @return Obj objeto do evento atualizado
      */
     public function updateEvents(int $id, Request $request){
-          //select from db
           $this->user = $this->setAccess($id);
-          //helper
           if($request->has('calendarID')){
             $this->clientHelper->setCalendarId($request->input('calendarID'));
         }
@@ -75,13 +73,10 @@ class GoogleClientController extends Controller {
      /**
      * Funcao para deletar eventos de um usuario
      * @param int $id do usario contido no banco
-     * @param Request calendar_id
-     * @return array Um array de eventos
+     * @param Request calendar_id, event_id
      */
     public function deleteEvents(int $id, Request $request){
-       //select from db
        $this->user = $this->setAccess($id);
-       //helper
        if($request->has('calendarID')){
          $this->clientHelper->setCalendarId($request->input('calendarID'));
      }
@@ -93,6 +88,7 @@ class GoogleClientController extends Controller {
     /**
      * Funcao que lista todos os calendarios
      * @param int $id do usario contido no banco
+     * @return array de calendarios
      */
     public function listCalendars(int $id){
         $this->user = $this->setAccess($id);
@@ -103,6 +99,7 @@ class GoogleClientController extends Controller {
 
     /**
      * Funcao que cria um novo calendario
+     * @return Obj objeto do calendario criado
      */
     public function createCalendar(int $id, Request $request){
         $this->user = $this->setAccess($id);
@@ -113,6 +110,8 @@ class GoogleClientController extends Controller {
 
     /**
      * Funcao que deleta um calendario
+     * @param int $id do usario contido no banco
+     * @param Request calendar_id
      */
     public function deleteCalendar(int $id, Request $request){
         $this->user = $this->setAccess($id);
@@ -123,6 +122,8 @@ class GoogleClientController extends Controller {
 
     /**
      * Funcao que atualiza um calendario
+     * @param Request calendar_id
+     * @return Obj objeto do calendario atualizado
      */
     public function updateCalendar(int $id, Request $request){
         $this->user = $this->setAccess($id);
@@ -132,13 +133,7 @@ class GoogleClientController extends Controller {
 
     }
 
-    public function buscarClientes(){
-        $googleClient = new GoogleClient();
-        return $googleClient->all();
-    }
-
     private $client;
     private $user;
     private $clientHelper;
-
 }
