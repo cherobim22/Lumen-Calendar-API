@@ -14,12 +14,17 @@
 $router->get('/auth', 'LoginController@Auth');
 $router->get('/callback', 'LoginController@Callback');
 
+<<<<<<< HEAD
 //Database
 $router->get('/clients', 'ClientController@buscarTodos');
 $router->get('/clients/{id}', 'ClientController@buscarClientes');
 $router->delete('/clients/{id}', 'ClientController@deletarClientes');
 $router->put('/clients/{id}', 'ClientController@updateClient');
 
+=======
+//DB
+$router->get('/clients', 'GoogleClientController@buscarClientes');
+>>>>>>> c913abfd90d6af324b8f9479c9ec76dbaa4f249d
 //calendario
 $router->get('/calendars/{id}', 'GoogleClientController@listCalendars');
 $router->post('/createCalendar/{id}', 'GoogleClientController@createCalendar');
