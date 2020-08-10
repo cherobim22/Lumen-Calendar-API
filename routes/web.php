@@ -14,6 +14,8 @@
 $router->get('/auth', 'LoginController@Auth');
 $router->get('/callback', 'LoginController@Callback');
 
+//DB
+$router->get('/clients', 'GoogleClientController@buscarClientes');
 //calendario
 $router->get('/calendars/{id}', 'GoogleClientController@listCalendars');
 $router->post('/createCalendar/{id}', 'GoogleClientController@createCalendar');
