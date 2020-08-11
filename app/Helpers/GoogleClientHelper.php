@@ -98,6 +98,13 @@ class GoogleClientHelper {
         if(!$this->service){
             $this->setCalendarService($this->client);
         }
+        
+        if($request->get('description') !== NULL){
+            $event['description'] = $request->get('description');
+        }
+        if($request->get('summary') !== NULL){
+            $event['summary'] = $request->get('summary');
+        }
         $event = [
             'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
@@ -106,12 +113,8 @@ class GoogleClientHelper {
                 array('email' => $request->get('attendee_2')),
             )
         ];
-        if($request->get('description') !== NULL){
-            $event['description'] = $request->get('description');
-        }
-        if($request->get('summary') !== NULL){
-            $event['summary'] = $request->get('summary');
-        }
+      
+
         $optParams = new Google_Service_Calendar_Event($event);
         $creat_event = $this->service->events->insert($this->calendar_id, $optParams);
         return $creat_event;

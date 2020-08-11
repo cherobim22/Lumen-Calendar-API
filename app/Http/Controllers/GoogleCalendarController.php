@@ -31,23 +31,23 @@ class GoogleCalendarController extends Controller {
     public function listEvents(int $id, Request $request){
         $this->user = $this->setAccess($id);
         $this->clientHelper->setToken($this->user);
-        if($request->has('calendarID')){
-            $this->clientHelper->setCalendarId($request->input('calendarID'));
+        if($request->has('calendar_id')){
+            $this->clientHelper->setCalendarId($request->input('calendar_id'));
         }
         $events = $this->clientHelper->getEvents();
-        return $events;
+        return response()->json($events, 200);
     }
 
     /**
      * Funcao para criar um evento
      * @param int $id do usario contido no banco
-     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
+     * @param Request calendar_id, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
      * @return Obj objeto do evento criado
      */
     public function createEvents(int $id, Request $request){
         $this->user = $this->setAccess($id);
-        if($request->has('calendarID')){
-            $this->clientHelper->setCalendarId($request->input('calendarID'));
+        if($request->has('calendar_id')){
+            $this->clientHelper->setCalendarId($request->input('calendar_id'));
         }
         $this->clientHelper->setToken($this->user);
         $event = $this->clientHelper->createEvent($request);
@@ -57,13 +57,13 @@ class GoogleCalendarController extends Controller {
     /**
      * Funcao para atualizar um evento
      * @param int $id do usario contido no banco
-     * @param Request calendarID, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
+     * @param Request calendar_id, event_id, summary, description, start_datetime, end_datetime, attendee_1, attendee_2
      * @return Obj objeto do evento atualizado
      */
     public function updateEvents(int $id, Request $request){
           $this->user = $this->setAccess($id);
-          if($request->has('calendarID')){
-            $this->clientHelper->setCalendarId($request->input('calendarID'));
+          if($request->has('calendar_id')){
+            $this->clientHelper->setCalendarId($request->input('calendar_id'));
         }
           $this->clientHelper->setToken($this->user);
           $event = $this->clientHelper->updateEvents($request);
@@ -77,8 +77,8 @@ class GoogleCalendarController extends Controller {
      */
     public function deleteEvents(int $id, Request $request){
        $this->user = $this->setAccess($id);
-       if($request->has('calendarID')){
-         $this->clientHelper->setCalendarId($request->input('calendarID'));
+       if($request->has('calendar_id')){
+         $this->clientHelper->setCalendarId($request->input('calendar_id'));
      }
      $this->clientHelper->setToken($this->user);
           $event = $this->clientHelper->deleteEvents($request);
