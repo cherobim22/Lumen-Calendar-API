@@ -6,7 +6,7 @@ use App\Models\GoogleClient;
 use App\Helpers\GoogleClientHelper;
 use Illuminate\Http\Request;
 
-class GoogleClientController extends Controller {
+class GoogleCalendarController extends Controller {
     //__contruct
     public function __construct(GoogleClientHelper $clientHelper){
         $clientHelper = new GoogleClientHelper;
