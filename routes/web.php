@@ -21,13 +21,13 @@ $router->delete('/clients/{id}', 'ClientController@deletarClientes');
 $router->put('/clients/{id}', 'ClientController@updateClient');
 
 //calendario
-$router->get('/calendars/{id}', 'GoogleClientController@listCalendars');
-$router->post('/createCalendar/{id}', 'GoogleClientController@createCalendar');
-$router->put('/updateCalendar/{id}', 'GoogleClientController@updateCalendar');
-$router->delete('/deletCalendar/{id}', 'GoogleClientController@deleteCalendar');
+$router->get('/calendars/{id}', 'GoogleCalendarController@listCalendars');
+$router->post('/createCalendar/{id}', 'GoogleCalendarController@createCalendar');
+$router->put('/updateCalendar/{id}', 'GoogleCalendarController@updateCalendar');
+$router->delete('/deletCalendar/{id}', 'GoogleCalendarController@deleteCalendar');
 
 //eventos
-$router->get('/events/{id}', 'GoogleClientController@listEvents');
-$router->post('/createEvents/{id}', 'GoogleClientController@createEvents');
-$router->put('/updateEvents/{id}', 'GoogleClientController@updateEvents');
-$router->delete('/deletEvents/{id}', 'GoogleClientController@deleteEvents');
+$router->get('/events/{id}', 'GoogleCalendarController@listEvents');
+$router->post('/createEvents/{id}', 'GoogleCalendarController@createEvents');
+$router->put('/updateEvents/{id}', 'GoogleCalendarController@updateEvents');
+$router->delete('/deletEvents/{id}', 'GoogleCalendarController@deleteEvents');
