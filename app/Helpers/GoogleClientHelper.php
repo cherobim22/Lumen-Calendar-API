@@ -102,8 +102,8 @@ class GoogleClientHelper {
             'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'attendees' => array(
-                array('email' => $request(['attendee_1'])),
-                array('email' => $request(['attendee_2'])),
+                array('email' => $request->get('attendee_1')),
+                array('email' => $request->get('attendee_2')),
             )
         ];
         if($request->get('description') !== NULL){
