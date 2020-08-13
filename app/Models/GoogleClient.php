@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class GoogleClient extends Model{
 
-
     protected $table = 'google_client';
 
     protected $casts = [
@@ -17,7 +16,6 @@ class GoogleClient extends Model{
         'created' => 'integer'
     ];
 
-    //atributo fillable
     protected $fillable = [
         'blog_id',
         'access_token',
