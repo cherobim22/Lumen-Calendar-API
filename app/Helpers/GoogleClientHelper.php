@@ -98,7 +98,7 @@ class GoogleClientHelper {
         if(!$this->service){
             $this->setCalendarService($this->client);
         }
-        
+
         if($request->get('description') !== NULL){
             $event['description'] = $request->get('description');
         }
@@ -113,10 +113,10 @@ class GoogleClientHelper {
                 array('email' => $request->get('attendee_2')),
             )
         ];
-      
 
         $optParams = new Google_Service_Calendar_Event($event);
-        $creat_event = $this->service->events->insert($this->calendar_id, $optParams);
+        $sendNotifications = array('sendNotifications' => true);
+        $creat_event = $this->service->events->insert($this->calendar_id, $optParams, $sendNotifications);
         return $creat_event;
     }
 
