@@ -19,6 +19,7 @@ class GoogleClientHelper {
         $this->client->setAuthConfig(storage_path('keys/credentials.json'));
         $this->client->addScope(Google_Service_Calendar::CALENDAR);
         $this->client->setAccessType('offline');
+        $this->redirect_uri = env("REDIRECT_URI");
         return $this;
     }
 
@@ -266,6 +267,6 @@ class GoogleClientHelper {
     private $code;
     private $token;
     private $calendar_id = 'primary';
-    private $redirect_uri = "https://cherobim.innovaweb.com.br/callback";
+    private $redirect_uri = null;
    // private $redirect_uri = "http://localhost:8000/callback";
 }
