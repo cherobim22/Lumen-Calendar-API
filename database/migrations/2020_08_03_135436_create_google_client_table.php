@@ -15,7 +15,7 @@ class CreateGoogleClientTable extends Migration
     {
         Schema::create('google_client', function (Blueprint $table) {
             $table->id();
-            $table->integer('blog_id');
+            $table->integer('user_id');
             $table->string('access_token');
             $table->integer('expires_in');
             $table->string('refresh_token');

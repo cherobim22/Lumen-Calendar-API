@@ -9,7 +9,7 @@ class GoogleClient extends Model{
     protected $table = 'google_client';
 
     protected $casts = [
-        'blog_id' => 'integer',
+        'user_id' => 'integer',
         'access_token' => 'string',
         'expires_in' => 'integer',
         'refresh_token' => 'string',
@@ -17,7 +17,7 @@ class GoogleClient extends Model{
     ];
 
     protected $fillable = [
-        'blog_id',
+        'user_id',
         'access_token',
         'expires_in',
         'refresh_token',
