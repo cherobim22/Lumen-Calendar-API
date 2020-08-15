@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\GoogleClient;
 use Illuminate\Http\Request;
 
-class ClientController extends Controller
+class GoogleClientController extends Controller
 {
     //__contruct
     public function __construct(GoogleClient $googleClient)
@@ -26,7 +26,12 @@ class ClientController extends Controller
      * @return Obj
      */
     public function buscarClientes(int $id){
-        return $this->client->find($id);
+        $buscar_clientes = $this->client->find($id);
+        if($client != null){
+            return response()->json($buscar_clientes, 200);
+        }else{
+            return response()->json("cliente não encontrado", 404);
+        }
     }
 
      /**
@@ -35,7 +40,12 @@ class ClientController extends Controller
      */
     public function deletarClientes(int $id){
         $client_delete = $this->client->find($id);
-        return $client_delete->delete($id);
+        if($client_delete != null){
+            $client_delete->delete($id);
+            return response()->json("ok", 200);
+        }else{
+            return response()->json("cliente não encontrado", 404);
+        }
     }
 
      /**
@@ -43,7 +53,13 @@ class ClientController extends Controller
      * @param id do cliente
      */
     public function updateClient(int $id, Request $request){
-       return $this->client->where('id', $id)->update($request->all());
+        $client_update = $this->client->find($id);
+        if($client_update != null){
+            $client_update->update($request->all());
+            return response()->json($client_update, 200);
+        }else{
+            return response()->json("cliente não encontrado", 404);
+        }
     }
 
     private $client;
