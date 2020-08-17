@@ -40,6 +40,7 @@ class GoogleClientHelper {
 
         return $this->client->createAuthUrl();
     }
+
     /**
      * Funcao para setar o code
      */
@@ -56,7 +57,6 @@ class GoogleClientHelper {
             $this->client->refreshToken($this->token['refresh_token']);
             $this->token = $this->client->getAccessToken();
             $this->client->setAccessToken($this->token['access_token']);
-            //atualizaria no banco
         }
         $this->is_authenticated = true;
     }
@@ -106,8 +106,8 @@ class GoogleClientHelper {
         }
 
         $event = [
-            'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'), //require
-            'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),     //require
+            'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
+            'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
             'attendees' => array(
                 array('email' => $request->get('email'))
             ),

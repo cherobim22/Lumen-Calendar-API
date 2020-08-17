@@ -34,11 +34,10 @@ class GoogleLoginController extends Controller {
         $state_64 = base64_decode($state);
         $stateDecode = json_decode($state_64, true);
         $user_id = $stateDecode['user_id'];
-        //decode
-        //
+
         print_r(json_encode($user_id));
         print_r(json_encode($token));
-        //model
+
         $this->client = new GoogleClient;
         $this->client->user_id = $user_id;
         $this->client->access_token =  $token['access_token'];
