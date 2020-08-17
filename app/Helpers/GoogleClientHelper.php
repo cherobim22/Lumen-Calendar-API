@@ -8,17 +8,21 @@ use Google_Service_Calendar_Calendar;
 use Google_Service_Calendar_Event;
 use Google_Service_Calendar_EventDateTime;
 use Illuminate\Http\Request;
-
+use App\Helpers\WordPress;
 /**
  * Classe para lidar com as automacoes
  */
 class GoogleClientHelper {
 
     public function __construct(){
+
+        $this->setId($this->user_id);
+
         $this->client = new Google_Client();
         $this->client->setAuthConfig(storage_path('keys/credentials.json'));
         $this->client->addScope(Google_Service_Calendar::CALENDAR);
         $this->client->setAccessType('offline');
+        $this->client->setState($this->user_id);
         $this->redirect_uri = env("REDIRECT_URI");
         return $this;
     }
@@ -29,7 +33,8 @@ class GoogleClientHelper {
      * @return string Url em que o cliente tem que acessar
      */
     public function getAuthUrl(){
-        $this->client->setRedirectUri($this->redirect_uri);
+        //$this->client->setRedirectUri($this->redirect_uri.'/'.WordPress::getUserId());
+       $this->client->setRedirectUri($this->redirect_uri);
         $this->client->setApprovalPrompt('force');
         $this->client->setIncludeGrantedScopes(true);
 
@@ -100,24 +105,28 @@ class GoogleClientHelper {
             $this->setCalendarService($this->client);
         }
 
-        if($request->get('description') !== NULL){
-            $event['description'] = $request->get('description');
-        }
-        if($request->get('summary') !== NULL){
-            $event['summary'] = $request->get('summary');
-        }
         $event = [
-            'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'),
-            'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),
+            'start' => array('dateTime' => $request->get('start_datetime'), 'timeZone' => 'America/Sao_Paulo'), //require
+            'end' => array('dateTime' => $request->get('end_datetime'), 'timeZone' => 'America/Sao_Paulo'),     //require
             'attendees' => array(
-                array('email' => $request->get('attendee_1')),
-                array('email' => $request->get('attendee_2')),
-            )
+                array('email' => $request->get('email'))
+            ),
+            'guestsCanModify' => false,
+            'guestsCanSeeOtherGuests' => false,
+            'guestsCanInviteOthers' => false
+
         ];
 
+        if($request->has('summary')){
+            $event['summary'] = $request->get('summary');
+        }
+        if($request->has('description')){
+            $event['description'] = $request->get('description');
+        }
         $optParams = new Google_Service_Calendar_Event($event);
         $sendNotifications = array('sendNotifications' => true);
         $creat_event = $this->service->events->insert($this->calendar_id, $optParams, $sendNotifications);
+
         return $creat_event;
     }
 
@@ -153,8 +162,8 @@ class GoogleClientHelper {
             $end->setTimeZone('America/Sao_Paulo');
             $event->setEnd($end);
         }
-
-        $updateEvent = $this->service->events->update($this->calendar_id, $id_event, $event );
+        $sendNotifications = array('sendNotifications' => true);
+        $updateEvent = $this->service->events->update($this->calendar_id, $id_event, $event, $sendNotifications);
         return $updateEvent;
     }
 
@@ -169,7 +178,8 @@ class GoogleClientHelper {
             $this->setCalendarService($this->client);
         }
         try{
-             $deletEvent = $this->service->events->delete($this->calendar_id, $id_event);
+            $sendNotifications = array('sendNotifications' => true);
+             $deletEvent = $this->service->events->delete($this->calendar_id, $id_event, $sendNotifications);
              return "deletado";
         }catch (Exception $e) {
             echo 'Evento não encontrado: ',  $e->getMessage(), "\n";
@@ -260,6 +270,14 @@ class GoogleClientHelper {
         $this->service = new Google_Service_Calendar($this->client);
     }
 
+    public function setId($user_id){
+        $stateArray = ['user_id' => WordPress::getUserId()];
+        $stateEncoded = json_encode($stateArray);
+        $state_64 = strtr(base64_encode($stateEncoded), '+/=', '-_,');
+        return $this->user_id = $state_64;
+
+    }
+
     private $calendar = null;
     private $service = null;
     private $is_authenticated = false;
@@ -267,6 +285,9 @@ class GoogleClientHelper {
     private $code;
     private $token;
     private $calendar_id = 'primary';
-    private $redirect_uri = null;
-   // private $redirect_uri = "http://localhost:8000/callback";
+    //private $redirect_uri = "http://lucas.innovaweb.com.br/google/callback";
+    // private $redirect_uri = "http://localhost:8000/callback";
+    private $redirect_uri =  null;
+    private $user_id = null;
+
 }
