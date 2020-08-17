@@ -19,7 +19,7 @@ class GoogleCalendarController extends Controller {
      */
     public function setAccess(int $id){
         $this->client = new GoogleClient;
-        $google_client = $this->client::select('access_token','refresh_token')->where('id', $id)->first();
+        $google_client = $this->client::select('access_token','refresh_token')->where('user_id', $id)->first();
         return $google_client;
     }
 
@@ -51,7 +51,7 @@ class GoogleCalendarController extends Controller {
         }
         $this->clientHelper->setToken($this->user);
         $event = $this->clientHelper->createEvent($request);
-        return json_encode($event);
+        return response()->json($event, 200);
     }
 
     /**
@@ -67,7 +67,7 @@ class GoogleCalendarController extends Controller {
         }
           $this->clientHelper->setToken($this->user);
           $event = $this->clientHelper->updateEvents($request);
-          return json_encode($event);
+          return response()->json($event, 200);
     }
 
      /**
@@ -76,12 +76,17 @@ class GoogleCalendarController extends Controller {
      * @param Request calendar_id, event_id
      */
     public function deleteEvents(int $id, Request $request){
-       $this->user = $this->setAccess($id);
-       if($request->has('calendar_id')){
-         $this->clientHelper->setCalendarId($request->input('calendar_id'));
-     }
-     $this->clientHelper->setToken($this->user);
-          $event = $this->clientHelper->deleteEvents($request);
+        $this->user = $this->setAccess($id);
+        if($request->has('calendar_id')){
+            $this->clientHelper->setCalendarId($request->input('calendar_id'));
+        }
+        $this->clientHelper->setToken($this->user);
+        try{
+            $event = $this->clientHelper->deleteEvents($request);
+            return response()->json("ok", 200);
+        }catch(Exception $e){
+            return response()->json("evento nao encontrado", 200);
+        }
     }
 
     //CALENDAR
