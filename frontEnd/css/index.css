@@ -1,0 +1,45 @@
+.divlogin{
+    display: flex;
+    align-items: center;
+    flex-direction:column;
+}
+#btn-modal{
+    margin-top:10px;
+}
+#newCalendar{
+    margin-bottom: 15px;
+}
+#lcalendar{
+    margin-top: 5px;
+}
+.icon {
+    background: url(/imgs/google.svg) no-repeat;
+    margin-top: 50px;
+    border: none;
+    width: 40px;
+    height: 40px;
+}
+.divpopup{
+    display: none;
+    width:200px;
+    height: 300px;
+    border: 3px solid #000;
+}
+.lead-box{
+    margin-left: 15px;
+}
+.form-container {
+    display: flex;
+    flex-direction:column;
+    max-width: 300px;
+    padding: 10px;
+    background-color: white;
+}
+ .btn-cancel{
+    color: red;
+    margin-top: 10px;
+}
+#cancel{
+    margin-top: 20px;
+    display: none;
+}
