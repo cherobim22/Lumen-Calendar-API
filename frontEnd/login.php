@@ -1,5 +1,5 @@
 <?php
-$url = "http://lucas.innovaweb.com.br/google/auth/geturl";
+$url = "";
 
 $context = stream_context_create(array(
     'http' => array(
