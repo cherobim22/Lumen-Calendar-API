@@ -1,17 +1,6 @@
 <?php
 
-$url = "http://lucas.innovaweb.com.br/google/calendar/read/";
-
-$context = stream_context_create(array(
-    'http' => array(
-        'header' => "Authorization: ",
-    ),
-));
-
-$calendar =  json_decode(file_get_contents($url,false,$context));
-
-
-//print_r($calendar->items);
+include "listCalendars.php";
 
 ?>
 <!DOCTYPE html>
@@ -38,7 +27,6 @@ $calendar =  json_decode(file_get_contents($url,false,$context));
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Novo Evento</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -47,84 +35,88 @@ $calendar =  json_decode(file_get_contents($url,false,$context));
                 </div>
 
                 <div class="modal-body">
-                    <form class="form-container" action="calendars.php">
+                    <form  action="newEvent.php">
                         <div class="row">
                             <div id="lcalendar" class="col-sm">
-                            Calendarios:
+                                 Calendarios:
                             </div>
-                            <div class="col-sm">
+                            <div class="col-sm d-flex flex-row-reverse">
                             <button type="button" class="btn btn-primary btn-sm pull-right" data-toggle="modal" id="newCalendar" data-target="#myModal">Novo Calendario</button>
                             </div>
-                            <a href="#"><span class="glyphicon glyphicon-envelope"></span></a>
                         </div>
+    
                         <select  id="calendars" name="user[calendar_id]" class="custom-select"> 
-                            <option></option>  
+                            <option>Selecione um calendario</option>  
                             <?php foreach($calendar->items as $row) {?> 
                                 <option  value="<?=$row->id?>"><?=$row->summary?></option>
                             <?php } ?>
                         </select>
-                        
 
                         <div class="lead-box">
                             </br>
-                            <input type="checkbox" id="lead" class="form-check-input" onclick="myFunction()">
-                            <label for="lead">Notificar lead</label><br>                           
+                            <input type="checkbox" id="lead" class="form-check-input" onclick="setEmail()">
+                            <label for="lead">Notificar lead</label>
+                            </br> 
+                            <input class="form-control" id="email_lead" style="display:none" placeholder="Email lead" name="user[email]">                      
                         </div>
-
-                        <input id="email_lead"class="form-control" style="display:none" placeholder="email lead" name="user[email]">
-                        </br>
 
                         <div>
-                            <label>Titulo</label>
-                            <input id="summary" class="form-control" placeholder="titulo do evento" name="user[summary]">
                             </br>
-                            <label>Inicio</label>
-                            <input id="summary" class="form-control" placeholder="2015-05-28T17:00:00-07:00" name="user[start_datetime]">
+                            <div class="form-group row">
+                                <label for="example-datetime-local-input" class="col-2 col-form-label">Titulo</label>
+                                <div class="col-10">
+                                    <input id="summary" class="form-control" placeholder="Titulo do evento" name="user[summary]">
+                                </div>
+                            </div>
                             </br>
-                            <label>Fim</label>
-                            <input id="summary" class="form-control" placeholder="2015-05-28T17:00:00-07:00" name="user[end_datetime]">
+                            <div class="form-group row">
+                                <label for="example-datetime-local-input" class="col-2 col-form-label">Inicio</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="datetime-local"  id="example-datetime-local-input" name="user[start_datetime]">
+                                </div>
+                            </div>
+                            </br>
+                            <div class="form-group row">
+                                <label for="example-datetime-local-input" class="col-2 col-form-label">Fim</label>
+                                <div class="col-10">
+                                    <input class="form-control" type="datetime-local"  id="example-datetime-local-input" name="user[end_datetime]">
+                                </div>
+                            </div>
                             </br>
                         </div>
-                       <button type="submit" class="btn btn-primary">Save</button>
+                       
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Salvar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Sair</button>
+                        </div>
                     </form> 
-                    
                 </div>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
-
             </div>
         </div>
     </div>
 
     
     <!-- The Modal -->
-  <div class="modal" id="myModal">
+  <div class="modal fade" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
-      
         <!-- Modal Header -->
         <div class="modal-header">
           <h4 class="modal-title">Novo Calendario</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
-        
         <!-- Modal body -->
-        <div class="modal-body">
-            <form class="form-container" action="new_calendar.php">
+        <form id="formCalendar" action="new_calendar.php">
+            <div class="modal-body">
                 <label>Titulo</label>
                 <input id="summary"  class="form-control" placeholder="nome do calendario" name="user[summary]">
-                            </br>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </form>
-        </div>
-        
-        <!-- Modal footer -->
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
-        
+            </div>
+            <!-- Modal footer -->
+            <div class="modal-footer d-flex flex-row">
+                <button id="saveCalendar" type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </form>
       </div>
     </div>
   </div>
@@ -132,20 +124,8 @@ $calendar =  json_decode(file_get_contents($url,false,$context));
     <script type="text/javascript">
      $(function () {
 
-        $('form').on('submit', function (e) {
-
-        e.preventDefault();
-
-        $.ajax({
-            type: 'post',
-            url: 'new_calendar.php',
-            data: $('form').serialize(),
-            success: function () {
-            alert('form was submitted');
-            location.reload();
-            }
-        });
-
+        $('#newCalendar').on('click', function (e) {
+            $('#exampleModal').css('display', 'none');
         });
 
         });
